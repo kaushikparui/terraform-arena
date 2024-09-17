@@ -1,6 +1,6 @@
 # --- ECS Node SG ---
 
-/*resource "aws_security_group" "ecs_node_sg" {
+resource "aws_security_group" "ecs_node_sg" {
   name_prefix = "demo-ecs-node-sg-"
   vpc_id      = aws_vpc.main.id
 
@@ -10,7 +10,7 @@
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}*/
+}
 
 # --- ECS TASK SG ---
 

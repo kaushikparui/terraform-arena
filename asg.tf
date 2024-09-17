@@ -2,7 +2,8 @@
 
 resource "aws_autoscaling_group" "ecs" {
   name_prefix         = "ecs-asg-"
-  vpc_zone_identifier = [aws_subnet.private.id]
+  vpc_zone_identifier = [aws_subnet.public_1.id]
+  #vpc_zone_identifier = [aws_subnet.private.id]
   #vpc_zone_identifier       = aws_subnet.public[*].id
   min_size                  = 1
   max_size                  = 2

@@ -7,15 +7,16 @@ resource "aws_ecs_cluster" "main" {
 # --- ECS Launch Template ---
 
 data "aws_ssm_parameter" "ecs_node_ami" {
-  name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+  #name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+  name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 
 resource "aws_launch_template" "ecs_ec2" {
-  name_prefix            = "ecs-ec2-node-"
-  image_id               = data.aws_ssm_parameter.ecs_node_ami.value
-  instance_type          = "t3.micro"
-  vpc_security_group_ids = [aws_security_group.ecs_task.id]
-
+  name_prefix   = "ecs-ec2-node-"
+  image_id      = data.aws_ssm_parameter.ecs_node_ami.value
+  instance_type = "t3.micro"
+  #vpc_security_group_ids = [aws_security_group.ecs_task.id]
+  vpc_security_group_ids = [aws_security_group.ecs_node_sg.id]
   iam_instance_profile { arn = aws_iam_instance_profile.ecs_node.arn }
   monitoring { enabled = true }
 
@@ -68,7 +69,8 @@ resource "aws_ecs_service" "app" {
 
   network_configuration {
     security_groups = [aws_security_group.ecs_task.id]
-    subnets         = [aws_subnet.private.id]
+    subnets         = [aws_subnet.public_1.id]
+    #subnets         = [aws_subnet.private.id]
     #subnets         = aws_subnet.public[*].id
   }
 
