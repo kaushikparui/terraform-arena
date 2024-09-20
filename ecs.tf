@@ -40,7 +40,8 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = jsonencode([{
     name = "app",
     #    image        = "${aws_ecr_repository.app.repository_url}:latest",
-    image        = "725873549359.dkr.ecr.us-west-1.amazonaws.com/devin:latest",
+    #image        = "725873549359.dkr.ecr.us-west-1.amazonaws.com/devin:latest",
+    image        = "337909771265.dkr.ecr.us-west-1.amazonaws.com/devin:latest",
     essential    = true,
     portMappings = [{ containerPort = 80, hostPort = 80 }],
 
@@ -69,7 +70,8 @@ resource "aws_ecs_service" "app" {
 
   network_configuration {
     security_groups = [aws_security_group.ecs_task.id]
-    subnets         = [aws_subnet.public_1.id]
+    #subnets         = [aws_subnet.public_1.id]
+    subnets         = aws_subnet.public_subnets[*].id
     #subnets         = [aws_subnet.private.id]
     #subnets         = aws_subnet.public[*].id
   }

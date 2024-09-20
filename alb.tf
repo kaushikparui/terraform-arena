@@ -3,8 +3,8 @@
 resource "aws_lb" "main" {
   name               = "ecs-alb"
   load_balancer_type = "application"
-  subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]
-  #subnets            = aws_subnet.public[*].id
+  #subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+  subnets         = aws_subnet.public_subnets[*].id
   security_groups = [aws_security_group.http.id]
 }
 
@@ -48,7 +48,8 @@ resource "aws_lb_listener" "https_listener" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:us-west-1:725873549359:certificate/53f0eccc-15fe-469c-809b-e64bf96c5c57"
+  #certificate_arn   = "arn:aws:acm:us-west-1:725873549359:certificate/53f0eccc-15fe-469c-809b-e64bf96c5c57"
+  certificate_arn   = "arn:aws:acm:us-west-1:337909771265:certificate/a3112adc-1b17-4d10-9a48-4f56195f4bdf"
 
   default_action {
     type             = "forward"
