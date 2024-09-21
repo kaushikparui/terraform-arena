@@ -15,10 +15,23 @@ resource "aws_launch_template" "ecs_ec2" {
   name_prefix   = "ecs-ec2-node-"
   image_id      = data.aws_ssm_parameter.ecs_node_ami.value
   instance_type = "t3.micro"
+  key_name      = aws_key_pair.tf_key.key_name
   #vpc_security_group_ids = [aws_security_group.ecs_task.id]
   vpc_security_group_ids = [aws_security_group.ecs_node_sg.id]
+  update_default_version = true
+
+  private_dns_name_options { enable_resource_name_dns_a_record = false }
+
   iam_instance_profile { arn = aws_iam_instance_profile.ecs_node.arn }
   monitoring { enabled = true }
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 30
+      volume_type = "gp3"
+    }
+  }
 
   user_data = base64encode(<<-EOF
       #!/bin/bash
@@ -34,12 +47,12 @@ resource "aws_ecs_task_definition" "app" {
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.ecs_exec_role.arn
   network_mode       = "awsvpc"
-  cpu                = 256
-  memory             = 256
+  cpu                = 512
+  memory             = 512
 
   container_definitions = jsonencode([{
     name = "app",
-    #    image        = "${aws_ecr_repository.app.repository_url}:latest",
+    #image        = "${aws_ecr_repository.app.repository_url}:latest",
     #image        = "725873549359.dkr.ecr.us-west-1.amazonaws.com/devin:latest",
     image        = "337909771265.dkr.ecr.us-west-1.amazonaws.com/devin:latest",
     essential    = true,
@@ -71,7 +84,7 @@ resource "aws_ecs_service" "app" {
   network_configuration {
     security_groups = [aws_security_group.ecs_task.id]
     #subnets         = [aws_subnet.public_1.id]
-    subnets         = aws_subnet.public_subnets[*].id
+    subnets = (aws_subnet.private_subnets[*].id)
     #subnets         = [aws_subnet.private.id]
     #subnets         = aws_subnet.public[*].id
   }
@@ -81,10 +94,16 @@ resource "aws_ecs_service" "app" {
     base              = 1
     weight            = 100
   }
-
+  ## Spread tasks evenly accross all Availability Zones for High Availability
   ordered_placement_strategy {
     type  = "spread"
     field = "attribute:ecs.availability-zone"
+  }
+
+  ## Make use of all available space on the Container Instances
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "memory"
   }
 
   lifecycle {

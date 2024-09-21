@@ -11,5 +11,5 @@ resource "tls_private_key" "rsa" {
 resource "local_file" "tf_key" {
   content         = tls_private_key.rsa.private_key_pem
   file_permission = 400 # (Only applicable for local linux system)
-  filename        = "ecs_app_bastion"
+  filename        = "ecs_app_bastion.pem"
 }
