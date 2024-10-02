@@ -74,6 +74,8 @@ locals {
     "com.amazonaws.us-west-1.ecr.dkr",
     "com.amazonaws.us-west-1.ecr.api",
     "com.amazonaws.us-west-1.logs",
+    #    "com.amazonaws.us-west-1.ec2",
+    #"com.amazonaws.us-west-1.s3",
   ]
 }
 
@@ -81,11 +83,12 @@ locals {
 # Create the VPC endpoints
 ####################################################
 resource "aws_vpc_endpoint" "vpc_endpoint" {
-  for_each            = { for idx, name in local.endpoint_list : name => idx }
-  vpc_id              = aws_vpc.main.id
-  vpc_endpoint_type   = "Interface"
-  service_name        = each.key
-  subnet_ids          = aws_subnet.private_subnets[*].id
+  for_each          = { for idx, name in local.endpoint_list : name => idx }
+  vpc_id            = aws_vpc.main.id
+  vpc_endpoint_type = "Interface"
+  service_name      = each.key
+  subnet_ids        = aws_subnet.private_subnets[*].id
+  #subnet_ids          = [aws_subnet.ecs-subnet-private-1.id, aws_subnet.ecs-subnet-private-2.id]
   private_dns_enabled = true
   security_group_ids  = [aws_security_group.security_group_endpoints.id]
 
@@ -95,11 +98,34 @@ resource "aws_vpc_endpoint" "vpc_endpoint" {
 }
 
 ####################################################
+# Create the S3 Gateway Endpoints
+####################################################
+resource "aws_vpc_endpoint" "s3_endpoint" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.us-west-1.s3"
+  vpc_endpoint_type = "Gateway"
+  #subnet_ids   = aws_subnet.private_subnets[*].id
+  #private_dns_enabled = true
+  #security_group_ids  = [aws_security_group.security_group_endpoints.id]
+
+  route_table_ids = [
+    aws_route_table.private_route_table.id
+  ]
+
+
+  tags = {
+    Name = "vpc-Endpoint-com.amazonaws.us-west-1.s3"
+  }
+}
+
+
+
+####################################################
 # Associate Private Route Table with VPC Endpoints
 ####################################################
-resource "aws_vpc_endpoint_subnet_association" "vpc_endpoint_subnet_association" {
+/*resource "aws_vpc_endpoint_subnet_association" "vpc_endpoint_subnet_association" {
   for_each = { for idx, subnet in aws_subnet.private_subnets : idx => subnet.id }
 
   subnet_id       = each.value
   vpc_endpoint_id = aws_vpc_endpoint.vpc_endpoint[local.endpoint_list[each.key]].id
-}
+}*/

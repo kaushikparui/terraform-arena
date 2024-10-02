@@ -1,10 +1,14 @@
-# --- ECS Cluster ---
+####################################################
+# ECS Cluster
+####################################################
 
 resource "aws_ecs_cluster" "main" {
   name = "ecs-cluster"
 }
 
-# --- ECS Launch Template ---
+####################################################
+# ECS Lunch Template
+####################################################
 
 data "aws_ssm_parameter" "ecs_node_ami" {
   #name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
@@ -40,7 +44,9 @@ resource "aws_launch_template" "ecs_ec2" {
   )
 }
 
-# --- ECS Task Definition ---
+####################################################
+# ECS Task Defination
+####################################################
 
 resource "aws_ecs_task_definition" "app" {
   family             = "ecs-td"
@@ -73,7 +79,9 @@ resource "aws_ecs_task_definition" "app" {
   }])
 }
 
-# --- ECS Service ---
+####################################################
+# ECS Service
+####################################################
 
 resource "aws_ecs_service" "app" {
   name            = "app"
@@ -85,7 +93,7 @@ resource "aws_ecs_service" "app" {
     security_groups = [aws_security_group.ecs_task.id]
     #subnets         = [aws_subnet.public_1.id]
     subnets = (aws_subnet.private_subnets[*].id)
-    #subnets         = [aws_subnet.private.id]
+    #subnets = [aws_subnet.ecs-subnet-private-1.id, aws_subnet.ecs-subnet-private-2.id]
     #subnets         = aws_subnet.public[*].id
   }
 
@@ -120,7 +128,9 @@ resource "aws_ecs_service" "app" {
 
 }
 
-# --- ECS Capacity Provider ---
+####################################################
+# ECS Capacity provider
+####################################################
 
 resource "aws_ecs_capacity_provider" "main" {
   name = "ec2"

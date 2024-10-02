@@ -1,10 +1,12 @@
-# --- ECS ASG ---
+####################################################
+# ECS Auto Scalling Group
+####################################################
 
 resource "aws_autoscaling_group" "ecs" {
   name_prefix = "ecs-asg-"
-  #vpc_zone_identifier = [aws_subnet.public_1.id]
-  #vpc_zone_identifier = [aws_subnet.private.id]
+  #vpc_zone_identifier = [aws_subnet.ecs-subnet-private-1.id, aws_subnet.ecs-subnet-private-2.id]
   #vpc_zone_identifier       = aws_subnet.public[*].id
+  #vpc_zone_identifier = [aws_subnet.private.id]
   vpc_zone_identifier       = tolist(aws_subnet.private_subnets[*].id)
   min_size                  = 1
   max_size                  = 2

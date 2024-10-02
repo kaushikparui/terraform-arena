@@ -1,4 +1,6 @@
-# --- ECS Node SG ---
+####################################################
+# ECS EC2 Nodes Security Group
+####################################################
 
 resource "aws_security_group" "ecs_node_sg" {
   name_prefix = "demo-ecs-node-sg-"
@@ -38,7 +40,9 @@ resource "aws_security_group" "ecs_node_sg" {
   tags = { Name = "ecs-ec2-sg" }
 }
 
-# --- ECS TASK SG ---
+####################################################
+# ECS Task Security Group
+####################################################
 
 resource "aws_security_group" "ecs_task" {
   name_prefix = "ecs-sg-"
@@ -60,9 +64,9 @@ resource "aws_security_group" "ecs_task" {
   }
 }
 
-# --- ALB SG ---
+
 ####################################################
-# --- ALB SG ---
+# ALB Security Group
 ####################################################
 resource "aws_security_group" "http" {
   name_prefix = "load-balancer-sg-"
@@ -95,7 +99,7 @@ resource "aws_security_group" "bastion_security_group" {
   vpc_id      = aws_vpc.main.id
 
   dynamic "ingress" {
-    for_each = [22, 80, 443]
+    for_each = [22]
     content {
       protocol    = "tcp"
       from_port   = ingress.value

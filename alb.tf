@@ -1,9 +1,11 @@
-# --- ALB ---
+####################################################
+# Application Load Balancer
+####################################################
 
 resource "aws_lb" "main" {
   name               = "ecs-alb"
   load_balancer_type = "application"
-  #subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+  #subnets            = [aws_subnet.ecs-subnet-public-1.id, aws_subnet.ecs-subnet-public-2.id]
   subnets         = aws_subnet.public_subnets[*].id
   security_groups = [aws_security_group.http.id]
 }
