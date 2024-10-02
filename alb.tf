@@ -5,9 +5,8 @@
 resource "aws_lb" "main" {
   name               = "ecs-alb"
   load_balancer_type = "application"
-  #subnets            = [aws_subnet.ecs-subnet-public-1.id, aws_subnet.ecs-subnet-public-2.id]
-  subnets         = aws_subnet.public_subnets[*].id
-  security_groups = [aws_security_group.http.id]
+  subnets            = aws_subnet.public_subnets[*].id
+  security_groups    = [aws_security_group.http.id]
 }
 
 resource "aws_lb_target_group" "app" {
@@ -35,8 +34,7 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type = "forward"
-    #type             = "redirect"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.app.id
   }
 
@@ -50,8 +48,7 @@ resource "aws_lb_listener" "https_listener" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  #certificate_arn   = "arn:aws:acm:us-west-1:725873549359:certificate/53f0eccc-15fe-469c-809b-e64bf96c5c57"
-  certificate_arn = "arn:aws:acm:us-west-1:337909771265:certificate/a3112adc-1b17-4d10-9a48-4f56195f4bdf"
+  certificate_arn   = var.acm_arn
 
   default_action {
     type             = "forward"
@@ -62,33 +59,6 @@ resource "aws_lb_listener" "https_listener" {
     Name = "https-listener"
   }
 }
-
-/*resource "aws_lb_listener_rule" "redirect_http_to_https" {
-  listener_arn = aws_lb_listener.http.arn
-
-  action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      host        = "ecs.radiantglacier.site"
-      status_code = "HTTP_301"
-    }
-  }
-
-  condition {
-    http_header {
-      http_header_name = "X-Forwarded-For"
-      values           = [aws_lb.main.dns_name]
-    }
-  }
-
-  tags = {
-    Name = "http-to-https-redirection"
-  }
-}*/
-
 
 output "alb_url" {
   value = aws_lb.main.dns_name

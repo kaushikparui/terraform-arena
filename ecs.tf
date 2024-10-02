@@ -3,7 +3,7 @@
 ####################################################
 
 resource "aws_ecs_cluster" "main" {
-  name = "ecs-cluster"
+  name = var.ecs_cluster_name
 }
 
 ####################################################
@@ -11,16 +11,14 @@ resource "aws_ecs_cluster" "main" {
 ####################################################
 
 data "aws_ssm_parameter" "ecs_node_ami" {
-  #name = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 
 resource "aws_launch_template" "ecs_ec2" {
-  name_prefix   = "ecs-ec2-node-"
-  image_id      = data.aws_ssm_parameter.ecs_node_ami.value
-  instance_type = "t3.micro"
-  key_name      = aws_key_pair.tf_key.key_name
-  #vpc_security_group_ids = [aws_security_group.ecs_task.id]
+  name_prefix            = "ecs-ec2-node-"
+  image_id               = data.aws_ssm_parameter.ecs_node_ami.value
+  instance_type          = var.ecs_ec2_type
+  key_name               = aws_key_pair.tf_key.key_name
   vpc_security_group_ids = [aws_security_group.ecs_node_sg.id]
   update_default_version = true
 
@@ -57,25 +55,23 @@ resource "aws_ecs_task_definition" "app" {
   memory             = 512
 
   container_definitions = jsonencode([{
-    name = "app",
-    #image        = "${aws_ecr_repository.app.repository_url}:latest",
-    #image        = "725873549359.dkr.ecr.us-west-1.amazonaws.com/devin:latest",
-    image        = "337909771265.dkr.ecr.us-west-1.amazonaws.com/devin:latest",
+    name         = "app",
+    image        = "${var.ecr_image_url}",
     essential    = true,
     portMappings = [{ containerPort = 80, hostPort = 80 }],
 
     /*environment = [
       { name = "EXAMPLE", value = "example" }
-    ]
+    ]*/
 
     logConfiguration = {
       logDriver = "awslogs",
       options = {
-        "awslogs-region"        = "us-east-1",
-        "awslogs-group"         = aws_cloudwatch_log_group.ecs.name,
+        "awslogs-region"        = "${var.aws_region}",
+        "awslogs-group"         = aws_cloudwatch_log_group.log.name,
         "awslogs-stream-prefix" = "app"
       }
-    },*/
+    },
   }])
 }
 
@@ -88,13 +84,10 @@ resource "aws_ecs_service" "app" {
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
-  #iam_role        = aws_iam_role.ecsInstanceRole.arn
+
   network_configuration {
     security_groups = [aws_security_group.ecs_task.id]
-    #subnets         = [aws_subnet.public_1.id]
-    subnets = (aws_subnet.private_subnets[*].id)
-    #subnets = [aws_subnet.ecs-subnet-private-1.id, aws_subnet.ecs-subnet-private-2.id]
-    #subnets         = aws_subnet.public[*].id
+    subnets         = (aws_subnet.private_subnets[*].id)
   }
 
   capacity_provider_strategy {

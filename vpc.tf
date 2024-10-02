@@ -15,7 +15,8 @@ locals {
 # Create the VPC
 ####################################################
 resource "aws_vpc" "main" {
-  cidr_block           = "10.10.0.0/16"
+  #cidr_block           = "10.10.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
@@ -101,36 +102,3 @@ resource "aws_route_table_association" "private_rt_asso" {
   subnet_id      = element(aws_subnet.private_subnets[*].id, count.index)
   route_table_id = aws_route_table.private_route_table.id
 }
-
-####################################################
-# Set default route table as private route table
-####################################################
-/*resource "aws_default_route_table" "private_route_table" {
-  default_route_table_id = aws_vpc.main.default_route_table_id
-}*/
-
-
-
-/*
-## Creates one Elastic IP per AZ (one for each NAT Gateway in each AZ)
-
-resource "aws_eip" "nat_gateway" {
-  count = 2
-
-  tags = {
-    Name = "ECS_EIP_${count.index}_NGW"
-  }
-}
-
-## Creates one NAT Gateway per AZ
-
-resource "aws_nat_gateway" "nat_gateway" {
-  count         = 2
-  subnet_id      = element(aws_subnet.public_subnets[*].id, count.index)
-  #  subnet_id     = aws_subnet.public_subnets[*].id
-  allocation_id = aws_eip.nat_gateway[count.index].id
-
-  tags = {
-    Name = "ECS_EIP_${count.index}_NGW"
-  }
-}*/

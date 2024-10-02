@@ -3,7 +3,7 @@
 ####################################################
 
 resource "aws_security_group" "ecs_node_sg" {
-  name_prefix = "demo-ecs-node-sg-"
+  name_prefix = "ecs-ec2-node-sg-"
   vpc_id      = aws_vpc.main.id
 
   ingress {
@@ -37,7 +37,7 @@ resource "aws_security_group" "ecs_node_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  tags = { Name = "ecs-ec2-sg" }
+  tags = { Name = "ecs-ec2-node-sg" }
 }
 
 ####################################################
@@ -53,7 +53,7 @@ resource "aws_security_group" "ecs_task" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {
@@ -62,11 +62,13 @@ resource "aws_security_group" "ecs_task" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = { Name = "ecs-sg" }
 }
 
 
 ####################################################
-# ALB Security Group
+# Application Load Balancer Security Group
 ####################################################
 resource "aws_security_group" "http" {
   name_prefix = "load-balancer-sg-"
@@ -74,7 +76,7 @@ resource "aws_security_group" "http" {
   vpc_id      = aws_vpc.main.id
 
   dynamic "ingress" {
-    for_each = [80, 443]
+    for_each = [80, 443] ## Enable 80 for debug or development purpose only
     content {
       protocol    = "tcp"
       from_port   = ingress.value
@@ -89,12 +91,15 @@ resource "aws_security_group" "http" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = { Name = "load-balancer-sg" }
 }
 
 ####################################################
 # Create the security group for Bastion Host EC2
 ####################################################
 resource "aws_security_group" "bastion_security_group" {
+  name_prefix = "bastion-host-sg-"
   description = "Allow traffic for EC2 Bastion Host"
   vpc_id      = aws_vpc.main.id
 
@@ -128,12 +133,15 @@ resource "aws_security_group" "bastion_security_group" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = { Name = "bastion-host-sg" }
 }
 
 ####################################################
 # Create the security group for VPC Endpoints
 ####################################################
 resource "aws_security_group" "security_group_endpoints" {
+  name_prefix = "vpc-endpoint-sg-"
   description = "Allow traffic for VPC Endpoints"
   vpc_id      = aws_vpc.main.id
 
@@ -142,8 +150,7 @@ resource "aws_security_group" "security_group_endpoints" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["10.10.0.0/16"]
-    #security_groups = [aws_security_group.ecs_node_sg.id]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {
@@ -154,5 +161,5 @@ resource "aws_security_group" "security_group_endpoints" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "vpc_endpoint_sg" }
+  tags = { Name = "vpc-endpoint-sg" }
 }
