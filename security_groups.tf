@@ -6,10 +6,18 @@ resource "aws_security_group" "ecs_node_sg" {
 
   ingress {
     description     = "Allow ingress traffic from ALB on HTTP on ephemeral ports"
-    from_port       = 1024
-    to_port         = 65535
-    protocol        = "tcp"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     security_groups = [aws_security_group.http.id]
+  }
+
+  ingress {
+    description     = "Allow ingress traffic from ECS Task SG on ports"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [aws_security_group.ecs_task.id]
   }
 
   ingress {
@@ -126,11 +134,12 @@ resource "aws_security_group" "security_group_endpoints" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description     = "Allow ingress traffic from EC2 Hosts"
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ecs_node_sg.id]
+    description = "Allow ingress traffic from VPC internal"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["10.10.0.0/16"]
+    #security_groups = [aws_security_group.ecs_node_sg.id]
   }
 
   egress {

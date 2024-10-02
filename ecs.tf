@@ -22,7 +22,7 @@ resource "aws_launch_template" "ecs_ec2" {
 
   private_dns_name_options { enable_resource_name_dns_a_record = false }
 
-  iam_instance_profile { arn = aws_iam_instance_profile.ecs_node.arn }
+  iam_instance_profile { arn = aws_iam_instance_profile.ecsInstanceRoleProfile.arn }
   monitoring { enabled = true }
 
   block_device_mappings {
@@ -44,8 +44,8 @@ resource "aws_launch_template" "ecs_ec2" {
 
 resource "aws_ecs_task_definition" "app" {
   family             = "ecs-td"
-  task_role_arn      = aws_iam_role.ecs_task_role.arn
-  execution_role_arn = aws_iam_role.ecs_exec_role.arn
+  task_role_arn      = aws_iam_role.ecsInstanceRole.arn
+  execution_role_arn = aws_iam_role.ecsInstanceRole.arn
   network_mode       = "awsvpc"
   cpu                = 512
   memory             = 512
@@ -80,7 +80,7 @@ resource "aws_ecs_service" "app" {
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
-
+  #iam_role        = aws_iam_role.ecsInstanceRole.arn
   network_configuration {
     security_groups = [aws_security_group.ecs_task.id]
     #subnets         = [aws_subnet.public_1.id]
@@ -110,7 +110,7 @@ resource "aws_ecs_service" "app" {
     ignore_changes = [desired_count]
   }
 
-  depends_on = [aws_lb_target_group.app]
+  depends_on = [aws_lb_target_group.app, aws_iam_role.ecsInstanceRole]
 
   load_balancer {
     target_group_arn = aws_lb_target_group.app.arn
