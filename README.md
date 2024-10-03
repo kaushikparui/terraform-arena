@@ -38,7 +38,7 @@ This project demonstrates a setup for an Amazon ECS Cluster running EC2 instance
 
 
 ## Diagram
-(https://github.com/rdx-trippy/terraform_realm/blob/architecture-1/architecture-diagram.png?raw=true)
+<img src="/architecture-diagram.png" alt="ArchitectureDiagram">
 
 ## License
 
