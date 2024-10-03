@@ -36,6 +36,12 @@ This project demonstrates a setup for an Amazon ECS Cluster running EC2 instance
 * **S3:** Amazon Simple Storage Service for data storage & needed for ECR as the image layers will be stored in AWS backend S3 bucket.
 * **CloudWatch Logs:** For logging, monitoring, and metrics.
 
+## Prerequisites
+* AWS Account.
+* [IAM User](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) with [Access Key Secret Key](https://k21academy.com/amazon-web-services/create-access-and-secret-keys-in-aws/).
+* [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) Installed.
+* [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) Installed.
+* Docker and Docker Compose for container management.
 
 ## Diagram
 <img src="/architecture-diagram.png" alt="ArchitectureDiagram">
