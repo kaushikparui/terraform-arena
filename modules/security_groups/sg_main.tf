@@ -3,7 +3,7 @@
 ####################################################
 
 resource "aws_security_group" "ecs_node_sg" {
-  name_prefix = "ecs-ec2-node-sg-"
+  name_prefix = "hrxz-dev-ecs-ec2-node-sg-"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -37,7 +37,7 @@ resource "aws_security_group" "ecs_node_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  tags = { Name = "ecs-ec2-node-sg" }
+  tags = { Name = "hrxz-dev-ecs-ec2-node-sg" }
 }
 
 ####################################################
@@ -45,7 +45,7 @@ resource "aws_security_group" "ecs_node_sg" {
 ####################################################
 
 resource "aws_security_group" "ecs_task" {
-  name_prefix = "ecs-sg-"
+  name_prefix = "hrxz-dev-ecs-sg-"
   description = "Allow all traffic within the VPC"
   vpc_id      = var.vpc_id
 
@@ -63,7 +63,7 @@ resource "aws_security_group" "ecs_task" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "ecs-sg" }
+  tags = { Name = "hrxz-dev-ecs-sg" }
 }
 
 
@@ -71,7 +71,7 @@ resource "aws_security_group" "ecs_task" {
 # Application Load Balancer Security Group
 ####################################################
 resource "aws_security_group" "http" {
-  name_prefix = "load-balancer-sg-"
+  name_prefix = "hrxz-dev-alb-sg-"
   description = "Allow all HTTP/HTTPS traffic from public"
   vpc_id      = var.vpc_id
 
@@ -92,14 +92,14 @@ resource "aws_security_group" "http" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "load-balancer-sg" }
+  tags = { Name = "hrxz-dev-alb-sg" }
 }
 
 ####################################################
 # Create the security group for Bastion Host EC2
 ####################################################
 resource "aws_security_group" "bastion_security_group" {
-  name_prefix = "bastion-host-sg-"
+  name_prefix = "hrxz-dev-bastion-host-sg-"
   description = "Allow traffic for EC2 Bastion Host"
   vpc_id      = var.vpc_id
 
@@ -134,14 +134,14 @@ resource "aws_security_group" "bastion_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "bastion-host-sg" }
+  tags = { Name = "hrxz-dev-bastion-host-sg" }
 }
 
 ####################################################
 # Create the security group for VPC Endpoints
 ####################################################
 resource "aws_security_group" "security_group_endpoints" {
-  name_prefix = "vpc-endpoint-sg-"
+  name_prefix = "hrxz-dev-vpc-endpoint-sg-"
   description = "Allow traffic for VPC Endpoints"
   vpc_id      = var.vpc_id
 
@@ -161,5 +161,5 @@ resource "aws_security_group" "security_group_endpoints" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "vpc-endpoint-sg" }
+  tags = { Name = "hrxz-dev-vpc-endpoint-sg" }
 }

@@ -1,7 +1,6 @@
 variable "aws_region" {
-  description = "Region of the Architecture deployment"
-  type        = string
-  default     = "us-west-1" ## N.California
+  description = "Fetch AWS Region from parent variables.tf"
+  type = string
 }
 
 variable "ecs_ec2_type" {
@@ -20,7 +19,7 @@ variable "ecr_image_url" {
 variable "ecs_cluster_name" {
   description = "Define the ECS CLuster name here"
   type        = string
-  default     = "ecs-app-cluster"
+  default     = "hrxz-dev-ecs-app-cluster"
 }
 
 variable "ecs_task" {

@@ -15,7 +15,7 @@ data "aws_ssm_parameter" "ecs_node_ami" {
 }
 
 resource "aws_launch_template" "ecs_ec2" {
-  name_prefix            = "ecs-ec2-node-"
+  name_prefix            = "hrxz-dev-ecs-ec2-node-"
   image_id               = data.aws_ssm_parameter.ecs_node_ami.value
   instance_type          = var.ecs_ec2_type
   key_name               = var.key_name
@@ -47,15 +47,15 @@ resource "aws_launch_template" "ecs_ec2" {
 ####################################################
 
 resource "aws_ecs_task_definition" "app" {
-  family             = "ecs-td"
+  family             = "hrxz-dev-ecs-td"
   task_role_arn      = var.ecsInstanceRole
   execution_role_arn = var.ecsInstanceRole
-  network_mode       = "awsvpc"
+  network_mode       = "bridge"
   cpu                = 512
   memory             = 512
 
   container_definitions = jsonencode([{
-    name         = "app",
+    name         = "hrxz-dev-app",
     image        = "${var.ecr_image_url}",
     essential    = true,
     portMappings = [{ containerPort = 80, hostPort = 0 }],
@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "app" {
       options = {
         "awslogs-region"        = "${var.aws_region}",
         "awslogs-group"         = var.log_grp_name
-        "awslogs-stream-prefix" = "app"
+        "awslogs-stream-prefix" = "hrxz-dev-app"
       }
     },
   }])
@@ -80,15 +80,16 @@ resource "aws_ecs_task_definition" "app" {
 ####################################################
 
 resource "aws_ecs_service" "app" {
-  name            = "app"
+  name            = "hrxz-dev-app"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
 
-  network_configuration {
-    security_groups = [var.ecs_task]
-    subnets         = (var.private_subnets[*])
-  }
+  ## The network_configuration block is only valid for awsvpc network mode. no need for bridge mode
+  #network_configuration {
+  #  security_groups = [var.ecs_task]
+  #  subnets         = (var.private_subnets[*])
+  #}
 
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.main.name
@@ -115,7 +116,7 @@ resource "aws_ecs_service" "app" {
 
   load_balancer {
     target_group_arn = var.alb_target_grp
-    container_name   = "app"
+    container_name   = "hrxz-dev-app"
     container_port   = 80
   }
 
@@ -126,7 +127,7 @@ resource "aws_ecs_service" "app" {
 ####################################################
 
 resource "aws_ecs_capacity_provider" "main" {
-  name = "ec2"
+  name = "hrxz-dev-ec2"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.ecs.arn

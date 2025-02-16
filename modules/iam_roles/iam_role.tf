@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "ecsInstanceRolePolicy" {
 }
 
 resource "aws_iam_role" "ecsInstanceRole" {
-  name               = "ecsInstanceRole_tf"
+  name               = "hrxz-dev-ecsInstanceRole"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.ecsInstanceRolePolicy.json
 }

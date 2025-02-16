@@ -7,7 +7,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  tags = { Name = "ecs-vpc" }
+  tags = { Name = "hrxz-dev-vpc" }
 }
 
 ####################################################
@@ -16,7 +16,7 @@ resource "aws_vpc" "main" {
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
-  tags = { Name = "ecs-vpc-igw" }
+  tags = { Name = "hrxz-dev-vpc-igw" }
 }
 
 ####################################################
@@ -30,7 +30,7 @@ resource "aws_subnet" "public_subnets" {
   availability_zone       = data.aws_availability_zones.available_zones.names[count.index]
   map_public_ip_on_launch = true # This makes public subnet
 
-  tags = { Name = "app-vpc-public-${local.azs_names[count.index]}" }
+  tags = { Name = "hrxz-dev-vpc-public-${local.azs_names[count.index]}" }
 }
 
 ####################################################
@@ -45,7 +45,7 @@ resource "aws_subnet" "private_subnets" {
 
   map_public_ip_on_launch = false # This makes private subnet
 
-  tags = { Name = "app-vpc-private-${local.azs_names[count.index]}" }
+  tags = { Name = "hrxz-dev-vpc-private-${local.azs_names[count.index]}" }
 }
 
 ####################################################
@@ -59,7 +59,7 @@ resource "aws_route_table" "public_route_table" {
     gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = { Name = "ecs-vpc-public-rt" }
+  tags = { Name = "hrxz-dev-vpc-public-rt" }
 
 }
 
@@ -69,7 +69,7 @@ resource "aws_route_table" "public_route_table" {
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.main.id
 
-  tags = { Name = "ecs-vpc-private-rt" }
+  tags = { Name = "hrxz-dev-vpc-private-rt" }
 }
 
 ####################################################

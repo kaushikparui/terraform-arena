@@ -7,16 +7,20 @@ resource "aws_lb_target_group" "app" {
   vpc_id      = var.vpc_id
   protocol    = "HTTP"
   port        = 80
-  target_type = "ip"
+  target_type = "instance"
 
   health_check {
     enabled             = true
     path                = "/"
-    port                = 80
-    matcher             = 200
-    interval            = 300
+    port                = "traffic-port"
+    matcher             = "200"
+    interval            = 30
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 3
+  }
+
+  tags = {
+    name = "hrxz-dev-alb-ecs-tg"
   }
 }

@@ -26,7 +26,7 @@ resource "aws_vpc_endpoint" "vpc_endpoint" {
   security_group_ids  = [var.security_group_endpoints]
 
   tags = {
-    Name = "vpc-Endpoint-${each.key}"
+    Name = "hrxz-dev-vpc-endpoint-${each.key}"
   }
 }
 
@@ -43,6 +43,6 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   ]
 
   tags = {
-    Name = "vpc-Endpoint-com.amazonaws.${var.aws_region}.s3"
+    Name = "hrxz-dev-vpc-endpoint-s3-bucket"
   }
 }

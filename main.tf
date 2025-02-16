@@ -11,7 +11,7 @@ module "vpc" {
 module "security_groups" {
   source = "./modules/security_groups"
 
-  vpc_id   = module.vpc.vpc_id    ## Mapping vpc_id variables with VPC Module's VPC ID Output / Expose
+  vpc_id   = module.vpc.vpc_id ## Mapping vpc_id variables with VPC Module's VPC ID Output / Expose
   vpc_cidr = module.vpc.vpc_cidr
 }
 
@@ -26,6 +26,7 @@ module "ecs" {
   log_grp_name           = module.cloudWatch.log_name
   key_name               = module.pemfile.pemfile
   alb_target_grp         = module.alb.alb_target_grp
+  aws_region             = var.aws_region
 }
 
 module "iam_roles" {
@@ -57,3 +58,7 @@ module "cloudWatch" {
 
   ecs_cluster_name = module.ecs.ecs_cluster_name
 }
+
+#module "s3_bucket" {
+#  source = "./modules/s3"
+#}

@@ -21,6 +21,6 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [var.bastion_security_group]
 
   tags = {
-    Name = "VPC-bastion-host"
+    Name = "hrxz-dev-vpc-bastion-host"
   }
 }
