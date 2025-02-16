@@ -1,7 +1,7 @@
 ####################################################
 # Get latest Amazon Linux 2 AMI
 ####################################################
-data "aws_ami" "amazon-linux-2" {
+data "aws_ami" "amazon-linux-2023" {
   most_recent = true
   owners      = ["amazon"]
   filter {
@@ -14,7 +14,7 @@ data "aws_ami" "amazon-linux-2" {
 # Create the Linux EC2 instance with a website
 ####################################################
 resource "aws_instance" "web" {
-  ami                    = data.aws_ami.amazon-linux-2.id
+  ami                    = data.aws_ami.amazon-linux-2023.id
   instance_type          = var.barion_host_type
   key_name               = var.pemfile
   subnet_id              = element(var.public_subnets,0)

@@ -42,6 +42,7 @@ This project demonstrates a setup for an Amazon ECS Cluster running EC2 instance
 * [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) Installed.
 * [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) Installed.
 * Docker and Docker Compose for container management.
+* ECR repository and atleast one docker image pushed.
 
 ## Diagram
 <img src="/architecture-diagram.png" alt="ArchitectureDiagram">

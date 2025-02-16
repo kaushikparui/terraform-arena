@@ -5,13 +5,16 @@ variable "barion_host_type" {
 }
 
 variable "bastion_security_group" {
+  description = "Fetch Bastion Host SG from SG module using parent main.tf"
   type = string
 }
 
 variable "pemfile" {
+  description = "Fetch Pemfile Name from Pemfile module using parent main.tf"
   type = string
 }
 
 variable "public_subnets" {
+  description = "Fetch List of Public Subnets from VPC module using parent main.tf"
   type = list(string)
 }

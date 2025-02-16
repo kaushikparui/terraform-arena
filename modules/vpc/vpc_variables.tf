@@ -11,5 +11,6 @@ variable "vpc_cidr" {
 }
 
 variable "security_group_endpoints" {
+  description = "Fetch VPC ENdpoint SG from SG Module using Parent main.tf"
   type = string
 }

@@ -1,3 +1,6 @@
+####################################################
+# Application Load Balancer Outputs
+####################################################
 output "alb_target_grp" {
   value = aws_lb_target_group.app.arn
 }

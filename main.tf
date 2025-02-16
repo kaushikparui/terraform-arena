@@ -1,3 +1,7 @@
+####################################################
+# Compiling Multiple Modules Into One Single Code
+####################################################
+
 module "vpc" {
   source = "./modules/vpc"
 
@@ -7,7 +11,7 @@ module "vpc" {
 module "security_groups" {
   source = "./modules/security_groups"
 
-  vpc_id   = module.vpc.vpc_id
+  vpc_id   = module.vpc.vpc_id    ## Mapping vpc_id variables with VPC Module's VPC ID Output / Expose
   vpc_cidr = module.vpc.vpc_cidr
 }
 

@@ -1,4 +1,5 @@
 variable "vpc_id" {
+  description = "Fetch VPC ID from VPC module using parent main.tf"
   type = string
 }
 
@@ -10,9 +11,10 @@ variable "acm_arn" {
 }
 
 variable "public_subnets" {
-  description = "List of Public Subnets will be fetched here"
+  description = "Fetch Public Subnet List from VPC module using parent main.tf"
   type = list(string)
 }
 variable "security_groups_http" {
+  description = "Fetch ALB Security Group from SG module using parent main.tf"
   type = string
 }
