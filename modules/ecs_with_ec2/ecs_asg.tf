@@ -4,7 +4,7 @@
 
 resource "aws_autoscaling_group" "ecs" {
   name_prefix               = "ecs-asg-"
-  vpc_zone_identifier       = tolist(aws_subnet.private_subnets[*].id)
+  vpc_zone_identifier       = var.private_subnets
   min_size                  = 1
   max_size                  = 2
   health_check_grace_period = 300

@@ -4,7 +4,7 @@
 
 resource "aws_security_group" "ecs_node_sg" {
   name_prefix = "ecs-ec2-node-sg-"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   ingress {
     description     = "Allow ingress traffic from ALB on HTTP on ephemeral ports"
@@ -47,7 +47,7 @@ resource "aws_security_group" "ecs_node_sg" {
 resource "aws_security_group" "ecs_task" {
   name_prefix = "ecs-sg-"
   description = "Allow all traffic within the VPC"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 0
@@ -73,7 +73,7 @@ resource "aws_security_group" "ecs_task" {
 resource "aws_security_group" "http" {
   name_prefix = "load-balancer-sg-"
   description = "Allow all HTTP/HTTPS traffic from public"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   dynamic "ingress" {
     for_each = [80, 443] ## Enable 80 for debug or development purpose only
@@ -101,7 +101,7 @@ resource "aws_security_group" "http" {
 resource "aws_security_group" "bastion_security_group" {
   name_prefix = "bastion-host-sg-"
   description = "Allow traffic for EC2 Bastion Host"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   dynamic "ingress" {
     for_each = [22]
@@ -143,7 +143,7 @@ resource "aws_security_group" "bastion_security_group" {
 resource "aws_security_group" "security_group_endpoints" {
   name_prefix = "vpc-endpoint-sg-"
   description = "Allow traffic for VPC Endpoints"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   ingress {
     description = "Allow ingress traffic from VPC internal"

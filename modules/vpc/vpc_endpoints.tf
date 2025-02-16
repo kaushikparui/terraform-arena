@@ -23,7 +23,7 @@ resource "aws_vpc_endpoint" "vpc_endpoint" {
   subnet_ids        = aws_subnet.private_subnets[*].id
   #subnet_ids          = [aws_subnet.ecs-subnet-private-1.id, aws_subnet.ecs-subnet-private-2.id]
   private_dns_enabled = true
-  security_group_ids  = [aws_security_group.security_group_endpoints.id]
+  security_group_ids  = [var.security_group_endpoints]
 
   tags = {
     Name = "vpc-Endpoint-${each.key}"

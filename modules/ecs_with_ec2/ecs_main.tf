@@ -18,13 +18,13 @@ resource "aws_launch_template" "ecs_ec2" {
   name_prefix            = "ecs-ec2-node-"
   image_id               = data.aws_ssm_parameter.ecs_node_ami.value
   instance_type          = var.ecs_ec2_type
-  key_name               = aws_key_pair.tf_key.key_name
-  vpc_security_group_ids = [aws_security_group.ecs_node_sg.id]
+  key_name               = var.key_name
+  vpc_security_group_ids = [var.ecs_node_sg]
   update_default_version = true
 
   private_dns_name_options { enable_resource_name_dns_a_record = false }
 
-  iam_instance_profile { arn = aws_iam_instance_profile.ecsInstanceRoleProfile.arn }
+  iam_instance_profile { arn = var.ecsInstanceRoleProfile }
   monitoring { enabled = true }
 
   block_device_mappings {
@@ -48,8 +48,8 @@ resource "aws_launch_template" "ecs_ec2" {
 
 resource "aws_ecs_task_definition" "app" {
   family             = "ecs-td"
-  task_role_arn      = aws_iam_role.ecsInstanceRole.arn
-  execution_role_arn = aws_iam_role.ecsInstanceRole.arn
+  task_role_arn      = var.ecsInstanceRole
+  execution_role_arn = var.ecsInstanceRole
   network_mode       = "awsvpc"
   cpu                = 512
   memory             = 512
@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "app" {
       logDriver = "awslogs",
       options = {
         "awslogs-region"        = "${var.aws_region}",
-        "awslogs-group"         = aws_cloudwatch_log_group.log.name,
+        "awslogs-group"         = var.log_grp_name
         "awslogs-stream-prefix" = "app"
       }
     },
@@ -86,8 +86,8 @@ resource "aws_ecs_service" "app" {
   desired_count   = 1
 
   network_configuration {
-    security_groups = [aws_security_group.ecs_task.id]
-    subnets         = (aws_subnet.private_subnets[*].id)
+    security_groups = [var.ecs_task]
+    subnets         = (var.private_subnets[*])
   }
 
   capacity_provider_strategy {
@@ -111,10 +111,10 @@ resource "aws_ecs_service" "app" {
     ignore_changes = [desired_count]
   }
 
-  depends_on = [aws_lb_target_group.app, aws_iam_role.ecsInstanceRole]
+  depends_on = [var.alb_target_grp, var.ecsInstanceRole]
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.app.arn
+    target_group_arn = var.alb_target_grp
     container_name   = "app"
     container_port   = 80
   }
