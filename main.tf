@@ -59,6 +59,6 @@ module "cloudWatch" {
   ecs_cluster_name = module.ecs.ecs_cluster_name
 }
 
-#module "s3_bucket" {
-#  source = "./modules/s3"
-#}
+module "s3_bucket" {
+  source = "./modules/s3"
+}

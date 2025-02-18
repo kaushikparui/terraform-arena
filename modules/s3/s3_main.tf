@@ -33,6 +33,9 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
       }
     ]
   })
+  
+  # Ensure public access block is configured first
+  depends_on = [aws_s3_bucket_public_access_block.public_access]
 }
 
 # Apply CORS Policy
