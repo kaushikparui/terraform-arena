@@ -18,3 +18,13 @@ variable "security_groups_http" {
   description = "Fetch ALB Security Group from SG module using parent main.tf"
   type = string
 }
+
+variable "app_name" {
+  description = "Application name"  ## Taking value from parent variables.tf
+  type        = string
+}
+
+variable "env" {
+  description = "Environment name"  ## Taking value from tfvars
+  type        = string
+}

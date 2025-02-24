@@ -3,7 +3,7 @@
 ####################################################
 
 resource "aws_ecs_cluster" "main" {
-  name = var.ecs_cluster_name
+  name = "${var.app_name}-${var.env}-cluster"
 }
 
 ####################################################
@@ -15,7 +15,7 @@ data "aws_ssm_parameter" "ecs_node_ami" {
 }
 
 resource "aws_launch_template" "ecs_ec2" {
-  name_prefix            = "hrxz-dev-ecs-ec2-node-"
+  name_prefix            = "${var.app_name}-${var.env}-ecs-ec2-node-"
   image_id               = data.aws_ssm_parameter.ecs_node_ami.value
   instance_type          = var.ecs_ec2_type
   key_name               = var.key_name
@@ -47,7 +47,7 @@ resource "aws_launch_template" "ecs_ec2" {
 ####################################################
 
 resource "aws_ecs_task_definition" "app" {
-  family             = "hrxz-dev-ecs-td"
+  family             = "${var.app_name}-${var.env}-ecs-td"
   task_role_arn      = var.ecsInstanceRole
   execution_role_arn = var.ecsInstanceRole
   network_mode       = "bridge"
@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "app" {
   memory             = 512
 
   container_definitions = jsonencode([{
-    name         = "hrxz-dev-app",
+    name         = "${var.app_name}-${var.env}-app",
     image        = "${var.ecr_image_url}",
     essential    = true,
     portMappings = [{ containerPort = 80, hostPort = 0 }],
@@ -69,7 +69,7 @@ resource "aws_ecs_task_definition" "app" {
       options = {
         "awslogs-region"        = "${var.aws_region}",
         "awslogs-group"         = var.log_grp_name
-        "awslogs-stream-prefix" = "hrxz-dev-app"
+        "awslogs-stream-prefix" = "${var.app_name}-${var.env}-app"
       }
     },
   }])
@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "app" {
 ####################################################
 
 resource "aws_ecs_service" "app" {
-  name            = "hrxz-dev-app"
+  name            = "${var.app_name}-${var.env}-app"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
@@ -116,7 +116,7 @@ resource "aws_ecs_service" "app" {
 
   load_balancer {
     target_group_arn = var.alb_target_grp
-    container_name   = "hrxz-dev-app"
+    container_name   = "${var.app_name}-${var.env}-app"
     container_port   = 80
   }
 
@@ -127,7 +127,7 @@ resource "aws_ecs_service" "app" {
 ####################################################
 
 resource "aws_ecs_capacity_provider" "main" {
-  name = "hrxz-dev-ec2"
+  name = "${var.app_name}-${var.env}-ec2"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.ecs.arn

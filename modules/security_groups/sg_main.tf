@@ -3,7 +3,7 @@
 ####################################################
 
 resource "aws_security_group" "ecs_node_sg" {
-  name_prefix = "hrxz-dev-ecs-ec2-node-sg-"
+  name_prefix = "${var.app_name}-${var.env}-ecs-ec2-node-sg-"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -37,7 +37,7 @@ resource "aws_security_group" "ecs_node_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  tags = { Name = "hrxz-dev-ecs-ec2-node-sg" }
+  tags = { Name = "${var.app_name}-${var.env}-ecs-ec2-node-sg" }
 }
 
 ####################################################
@@ -45,7 +45,7 @@ resource "aws_security_group" "ecs_node_sg" {
 ####################################################
 
 resource "aws_security_group" "ecs_task" {
-  name_prefix = "hrxz-dev-ecs-sg-"
+  name_prefix = "${var.app_name}-${var.env}-ecs-sg-"
   description = "Allow all traffic within the VPC"
   vpc_id      = var.vpc_id
 
@@ -63,7 +63,7 @@ resource "aws_security_group" "ecs_task" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "hrxz-dev-ecs-sg" }
+  tags = { Name = "${var.app_name}-${var.env}-ecs-sg" }
 }
 
 
@@ -71,7 +71,7 @@ resource "aws_security_group" "ecs_task" {
 # Application Load Balancer Security Group
 ####################################################
 resource "aws_security_group" "http" {
-  name_prefix = "hrxz-dev-alb-sg-"
+  name_prefix = "${var.app_name}-${var.env}-alb-sg-"
   description = "Allow all HTTP/HTTPS traffic from public"
   vpc_id      = var.vpc_id
 
@@ -92,14 +92,14 @@ resource "aws_security_group" "http" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "hrxz-dev-alb-sg" }
+  tags = { Name = "${var.app_name}-${var.env}-alb-sg" }
 }
 
 ####################################################
 # Create the security group for Bastion Host EC2
 ####################################################
 resource "aws_security_group" "bastion_security_group" {
-  name_prefix = "hrxz-dev-bastion-host-sg-"
+  name_prefix = "${var.app_name}-${var.env}-bastion-host-sg-"
   description = "Allow traffic for EC2 Bastion Host"
   vpc_id      = var.vpc_id
 
@@ -134,14 +134,14 @@ resource "aws_security_group" "bastion_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "hrxz-dev-bastion-host-sg" }
+  tags = { Name = "${var.app_name}-${var.env}-bastion-host-sg" }
 }
 
 ####################################################
 # Create the security group for VPC Endpoints
 ####################################################
 resource "aws_security_group" "security_group_endpoints" {
-  name_prefix = "hrxz-dev-vpc-endpoint-sg-"
+  name_prefix = "${var.app_name}-${var.env}-vpc-endpoint-sg-"
   description = "Allow traffic for VPC Endpoints"
   vpc_id      = var.vpc_id
 
@@ -161,5 +161,30 @@ resource "aws_security_group" "security_group_endpoints" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "hrxz-dev-vpc-endpoint-sg" }
+  tags = { Name = "${var.app_name}-${var.env}-vpc-endpoint-sg" }
+}
+
+####################################################
+# Create the security group for RDS Instance
+####################################################
+resource "aws_security_group" "rds_mysql_sg" {
+  name_prefix = "${var.app_name}-${var.env}-rds-sg-"
+  description = "RDS security group"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = { Name = "${var.app_name}-${var.env}-rds-sg" }
 }

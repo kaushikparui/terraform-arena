@@ -16,12 +16,6 @@ variable "ecr_image_url" {
   default     = "725873549359.dkr.ecr.us-west-1.amazonaws.com/devin:latest"
 }
 
-variable "ecs_cluster_name" {
-  description = "Define the ECS CLuster name here"
-  type        = string
-  default     = "hrxz-dev-ecs-app-cluster"
-}
-
 variable "ecs_task" {
   description = "Fetch ECS Task SG from SG Module using Parent main.tf"
   type = string
@@ -60,4 +54,14 @@ variable "key_name" {
 variable "alb_target_grp" {
   description = "Fetch ALB Target Group from ALB Module using Parent main.tf"
   type = string
+}
+
+variable "app_name" {
+  description = "Application name"  ## Taking value from parent variables.tf
+  type        = string
+}
+
+variable "env" {
+  description = "Environment name"  ## Taking value from tfvars
+  type        = string
 }

@@ -22,3 +22,8 @@ output "security_group_endpoints" {
   description = "Expose VPC Endpoint SG ID for other modules using parent main.tf"
   value = aws_security_group.security_group_endpoints.id
 }
+
+output "rds_mysql_sg" {
+  description = "Expose RDS SG ID for other modules using parent main.tf"
+  value = aws_security_group.rds_mysql_sg.id
+}

@@ -21,6 +21,6 @@ resource "aws_lb_target_group" "app" {
   }
 
   tags = {
-    name = "hrxz-dev-alb-ecs-tg"
+    name = "${var.app_name}-${var.env}-alb-ecs-tg"
   }
 }

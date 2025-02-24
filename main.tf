@@ -6,6 +6,8 @@ module "vpc" {
   source = "./modules/vpc"
 
   security_group_endpoints = module.security_groups.security_group_endpoints
+  app_name                 = var.app_name
+  env                      = var.env
 }
 
 module "security_groups" {
@@ -13,6 +15,8 @@ module "security_groups" {
 
   vpc_id   = module.vpc.vpc_id ## Mapping vpc_id variables with VPC Module's VPC ID Output / Expose
   vpc_cidr = module.vpc.vpc_cidr
+  app_name = var.app_name
+  env      = var.env
 }
 
 module "ecs" {
@@ -27,10 +31,14 @@ module "ecs" {
   key_name               = module.pemfile.pemfile
   alb_target_grp         = module.alb.alb_target_grp
   aws_region             = var.aws_region
+  app_name               = var.app_name
+  env                    = var.env
 }
 
 module "iam_roles" {
-  source = "./modules/iam_roles"
+  source   = "./modules/iam_roles"
+  app_name = var.app_name
+  env      = var.env
 }
 
 module "alb" {
@@ -39,10 +47,14 @@ module "alb" {
   vpc_id               = module.vpc.vpc_id
   public_subnets       = module.vpc.public_subnets
   security_groups_http = module.security_groups.http
+  app_name             = var.app_name
+  env                  = var.env
 }
 
 module "pemfile" {
-  source = "./modules/pemfile"
+  source   = "./modules/pemfile"
+  app_name = var.app_name
+  env      = var.env
 }
 
 module "bastion" {
@@ -51,6 +63,8 @@ module "bastion" {
   bastion_security_group = module.security_groups.bastion_security_group
   pemfile                = module.pemfile.pemfile
   public_subnets         = module.vpc.public_subnets
+  app_name               = var.app_name
+  env                    = var.env
 }
 
 module "cloudWatch" {
@@ -61,4 +75,17 @@ module "cloudWatch" {
 
 module "s3_bucket" {
   source = "./modules/s3"
+
+  app_name = var.app_name
+  env      = var.env
+}
+
+module "rds-mysql" {
+  source = "./modules/rds-mysql"
+
+  vpc_id          = module.vpc.vpc_id
+  private_subnets = module.vpc.private_subnets
+  rds_mysql_sg    = module.security_groups.rds_mysql_sg
+  app_name        = var.app_name
+  env             = var.env
 }

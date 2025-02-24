@@ -2,7 +2,7 @@
 # Create S3 Bucket
 ####################################################
 resource "aws_s3_bucket" "my_bucket" {
-  bucket = var.s3_bucket_name  # Change to a globally unique name
+  bucket = "${var.app_name}-${var.env}-bucket"  # Change to a globally unique name
 }
 
 # Disable Block Public Access Settings
@@ -50,5 +50,3 @@ resource "aws_s3_bucket_cors_configuration" "cors" {
     max_age_seconds = 3000
   }
 }
-
-

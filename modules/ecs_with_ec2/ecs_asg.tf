@@ -3,7 +3,7 @@
 ####################################################
 
 resource "aws_autoscaling_group" "ecs" {
-  name_prefix               = "hrxz-dev-ecs-asg-"
+  name_prefix               = "${var.app_name}-${var.env}-ecs-asg-"
   vpc_zone_identifier       = var.private_subnets
   min_size                  = 1
   max_size                  = 2
@@ -33,7 +33,7 @@ resource "aws_autoscaling_group" "ecs" {
 
   tag {
     key                 = "Name"
-    value               = "hrxz-dev-ecs-cluster"
+    value               = "${var.app_name}-${var.env}-ecs-cluster"
     propagate_at_launch = true
   }
 

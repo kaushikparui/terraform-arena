@@ -3,7 +3,7 @@
 ####################################################
 
 resource "aws_lb" "main" {
-  name               = "hrxz-dev-alb"
+  name               = "${var.app_name}-${var.env}-alb"
   load_balancer_type = "application"
   subnets            = var.public_subnets[*]
   security_groups    = var.security_groups_http[*]

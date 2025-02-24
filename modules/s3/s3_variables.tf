@@ -1,5 +1,9 @@
-variable "s3_bucket_name" {
-  description = "S3 bucket name"
-  type = string
-  default = "hrxz-dev-bucket"
+variable "app_name" {
+  description = "Application name"  ## Taking value from parent variables.tf
+  type        = string
+}
+
+variable "env" {
+  description = "Environment name"  ## Taking value from tfvars
+  type        = string
 }
