@@ -25,6 +25,11 @@ Apply your terraform code
 ```bash
   terraform apply project-plan
 ```
+
+Display Sensitive Outputs (password)
+```bash
+  terraform output --json | jq '.rds_password'
+```
 ##
 ## Destroy
 
