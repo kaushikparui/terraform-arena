@@ -76,3 +76,4 @@ terraform*
 .terraform*
 Original
 *csv
+*plan

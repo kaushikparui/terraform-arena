@@ -134,8 +134,8 @@ resource "aws_ecs_capacity_provider" "main" {
     managed_termination_protection = "DISABLED"
 
     managed_scaling {
-      maximum_scaling_step_size = 2
-      minimum_scaling_step_size = 1
+      maximum_scaling_step_size = var.asg_max_node
+      minimum_scaling_step_size = var.asg_min_node
       status                    = "ENABLED"
       target_capacity           = 100
     }

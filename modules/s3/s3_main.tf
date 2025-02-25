@@ -14,7 +14,9 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
   restrict_public_buckets = false
 }
 
-# Attach Bucket Policy
+####################################################
+# Create Bucket Policy
+####################################################
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.my_bucket.id
   policy = jsonencode({
@@ -35,10 +37,14 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
   })
   
   # Ensure public access block is configured first
-  depends_on = [aws_s3_bucket_public_access_block.public_access]
+  depends_on = [aws_s3_bucket_public_access_block.public_access,
+                aws_s3_bucket_cors_configuration.cors
+  ]
 }
 
-# Apply CORS Policy
+####################################################
+# Create Bucket CORS Policy
+####################################################
 resource "aws_s3_bucket_cors_configuration" "cors" {
   bucket = aws_s3_bucket.my_bucket.id
 
@@ -48,5 +54,17 @@ resource "aws_s3_bucket_cors_configuration" "cors" {
     allowed_headers = ["*"]
     expose_headers  = ["ETag", "Access-Control-Allow-Origin", "x-amz-server-side-encryption", "x-amz-request-id", "x-amz-id-2"]
     max_age_seconds = 3000
+  }
+}
+
+####################################################
+# Customize bucket ownership
+####################################################
+
+resource "aws_s3_bucket_ownership_controls" "bucket_ownership" {
+  bucket = aws_s3_bucket.my_bucket.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
   }
 }
