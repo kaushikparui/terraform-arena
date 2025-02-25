@@ -3,11 +3,12 @@
 ####################################################
 
 resource "aws_lb_target_group" "app" {
-  name_prefix = "alb-"
+  name_prefix = "lb-tg-"
   vpc_id      = var.vpc_id
   protocol    = "HTTP"
   port        = 80
   target_type = "instance"
+  deregistration_delay = "120"
 
   health_check {
     enabled             = true

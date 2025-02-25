@@ -22,8 +22,8 @@ variable "app_name" {
   description = "Application name"  ## Taking value from parent variables.tf
   type        = string
 }
-variable "instance_class" {
+variable "rds_instance_class" {
   description = "Database RDS instance class"
   type = string
-  default = "db.t3.micro"
+  #default = "db.t3.micro"
 }

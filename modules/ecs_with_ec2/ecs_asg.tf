@@ -5,8 +5,8 @@
 resource "aws_autoscaling_group" "ecs" {
   name_prefix               = "${var.app_name}-${var.env}-ecs-asg-"
   vpc_zone_identifier       = var.private_subnets
-  min_size                  = 1
-  max_size                  = 2
+  min_size                  = var.asg_min_node
+  max_size                  = var.asg_max_node
   health_check_grace_period = 300
   health_check_type         = "EC2"
   protect_from_scale_in     = false

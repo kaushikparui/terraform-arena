@@ -30,8 +30,8 @@ resource "aws_db_instance" "mysql_instance" {
   storage_type           = "gp3"
   engine                 = "mysql"
   engine_version         = "8.0"
-  instance_class         = var.instance_class
-  identifier             = "${var.app_name}_${var.env}_database"
+  instance_class         = var.rds_instance_class
+  identifier             = "${var.app_name}-${var.env}-database"
   db_name                = "${var.app_name}_${var.env}_db"
   username               = "${var.app_name}_${var.env}_usr"
   password               = random_password.rds_password.result

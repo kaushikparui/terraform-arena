@@ -15,7 +15,7 @@ data "aws_ami" "amazon-linux-2023" {
 ####################################################
 resource "aws_instance" "web" {
   ami                    = data.aws_ami.amazon-linux-2023.id
-  instance_type          = var.barion_host_type
+  instance_type          = var.bastion_host_type
   key_name               = var.pemfile
   subnet_id              = element(var.public_subnets,0)
   vpc_security_group_ids = [var.bastion_security_group]

@@ -19,22 +19,6 @@ module "security_groups" {
   env      = var.env
 }
 
-module "ecs" {
-  source = "./modules/ecs_with_ec2"
-
-  ecs_task               = module.security_groups.ecs_task
-  private_subnets        = module.vpc.private_subnets
-  ecs_node_sg            = module.security_groups.ecs_node_sg
-  ecsInstanceRoleProfile = module.iam_roles.ecsInstanceRoleProfile
-  ecsInstanceRole        = module.iam_roles.ecsInstanceRole
-  log_grp_name           = module.cloudWatch.log_name
-  key_name               = module.pemfile.pemfile
-  alb_target_grp         = module.alb.alb_target_grp
-  aws_region             = var.aws_region
-  app_name               = var.app_name
-  env                    = var.env
-}
-
 module "iam_roles" {
   source   = "./modules/iam_roles"
   app_name = var.app_name
@@ -57,6 +41,25 @@ module "pemfile" {
   env      = var.env
 }
 
+module "ecs" {
+  source = "./modules/ecs_with_ec2"
+
+  ecs_task               = module.security_groups.ecs_task
+  private_subnets        = module.vpc.private_subnets
+  ecs_node_sg            = module.security_groups.ecs_node_sg
+  ecsInstanceRoleProfile = module.iam_roles.ecsInstanceRoleProfile
+  ecsInstanceRole        = module.iam_roles.ecsInstanceRole
+  log_grp_name           = module.cloudWatch.log_name
+  key_name               = module.pemfile.pemfile
+  alb_target_grp         = module.alb.alb_target_grp
+  aws_region             = var.aws_region
+  app_name               = var.app_name
+  env                    = var.env
+  ecs_ec2_type           = var.ecs_ec2_type
+  asg_max_node           = var.asg_max_node
+  asg_min_node           = var.asg_min_node
+}
+
 module "bastion" {
   source = "./modules/bastion"
 
@@ -65,6 +68,7 @@ module "bastion" {
   public_subnets         = module.vpc.public_subnets
   app_name               = var.app_name
   env                    = var.env
+  bastion_host_type      = var.bastion_host_type
 }
 
 module "cloudWatch" {
@@ -83,9 +87,10 @@ module "s3_bucket" {
 module "rds-mysql" {
   source = "./modules/rds-mysql"
 
-  vpc_id          = module.vpc.vpc_id
-  private_subnets = module.vpc.private_subnets
-  rds_mysql_sg    = module.security_groups.rds_mysql_sg
-  app_name        = var.app_name
-  env             = var.env
+  vpc_id             = module.vpc.vpc_id
+  private_subnets    = module.vpc.private_subnets
+  rds_mysql_sg       = module.security_groups.rds_mysql_sg
+  app_name           = var.app_name
+  env                = var.env
+  rds_instance_class = var.rds_instance_class
 }

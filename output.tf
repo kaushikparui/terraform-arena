@@ -26,5 +26,5 @@ output "rds_username" {
 output "rds_password" {
   description = "RDS Password"
   value       = module.rds-mysql.rds_password
-  sensitive = true
+  sensitive   = true
 }

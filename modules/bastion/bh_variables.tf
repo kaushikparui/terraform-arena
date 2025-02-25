@@ -1,7 +1,7 @@
-variable "barion_host_type" {
+variable "bastion_host_type" {
   description = "Instance type for the Bastion Host server"
   type        = string
-  default     = "t3.micro"
+  #default     = "t3.micro"
 }
 
 variable "bastion_security_group" {

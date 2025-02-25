@@ -1,12 +1,28 @@
+##################################
+## AWS & ENV Denotes
+##################################
 variable "aws_region" {
   description = "Fetch AWS Region from parent variables.tf"
   type = string
 }
 
+variable "app_name" {
+  description = "Application name"  ## Taking value from parent variables.tf
+  type        = string
+}
+
+variable "env" {
+  description = "Environment name"  ## Taking value from tfvars
+  type        = string
+}
+
+##################################
+## ECS Variables
+##################################
 variable "ecs_ec2_type" {
   description = "Instance type for the ECS cluster EC2 server"
   type        = string
-  default     = "t3.micro"
+  #default     = "t3.micro"
 }
 
 variable "ecr_image_url" {
@@ -19,11 +35,6 @@ variable "ecr_image_url" {
 variable "ecs_task" {
   description = "Fetch ECS Task SG from SG Module using Parent main.tf"
   type = string
-}
-
-variable "private_subnets" {
-  description = "Fetch List of Private Subnets from VPC Module using Parent main.tf"
-  type = list(string)
 }
 
 variable "ecs_node_sg" {
@@ -56,12 +67,25 @@ variable "alb_target_grp" {
   type = string
 }
 
-variable "app_name" {
-  description = "Application name"  ## Taking value from parent variables.tf
-  type        = string
+##################################
+## Infra Subnets
+##################################
+
+variable "private_subnets" {
+  description = "Fetch List of Private Subnets from VPC Module using Parent main.tf"
+  type = list(string)
 }
 
-variable "env" {
-  description = "Environment name"  ## Taking value from tfvars
-  type        = string
+##################################
+## Auto Scale Group
+##################################
+
+variable "asg_min_node" {
+  description = "Auto Scalling Group Minimum Node"
+  type = string
+}
+
+variable "asg_max_node" {
+  description = "Auto Scalling Group Maximum Node"
+  type = string
 }
