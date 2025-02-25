@@ -13,24 +13,31 @@ This project demonstrates a setup for an Amazon ECS Cluster running EC2 instance
 
 * **ECS with EC2 Instances:** The ECS cluster runs EC2 instances in the private subnet. Docker containers for each service are managed by the ECS agent.
 
-**3 Bastion Host**
+**3 RDS Instance**
+
+* **RDS MySQL:** This Relational Database Schema (RDS) instance in the private subnets. ECS can communicate as it's a part of same VPC network. Outside the VPC network only way to access the Database via SSH tunneling of bastion host.
+
+**4 Bastion Host**
 * The bastion host in the public subnet provides SSH access to EC2 instances in the private subnet via the private IP
 
-**4 Application Load Balancer (ALB)**
+**5 Application Load Balancer (ALB)**
 * **ALB:** The ALB sits in front of the ECS services and routes traffic from the internet to the services running on EC2 instances in the private subnet.
 
 * **DNS/Route 53:** Manages domain name resolution for users connecting to the services through the ALB.
 
-**5 VPC Endpoints**
-* **Endpoints:** Enable secure connections between ECS containers and AWS services like ECS, ECR, S3, and CloudWatch without the need for an internet gateway or NAT.
+**6 S3 Bucket**
+* S3 bucket will be public with Bucket Owner Prefered.
 
-**6 Auto Scaling**
+**7 Auto Scaling**
 * **Auto Scaling:** The ECS cluster supports auto-scaling based on metrics collected by CloudWatch to ensure high availability and cost efficiency.
 
-**7 CloudWatch and Monitoring**
+**8 CloudWatch and Monitoring**
 * **CloudWatch:** Integrated for monitoring ECS instances and services, collecting metrics for performance and scaling.
 
-**8 AWS Services Integrated (VPC Endpoints)**
+**9 VPC Endpoints**
+* **Endpoints:** Enable secure connections between ECS containers and AWS services like ECS, ECR, S3, and CloudWatch without the need for an internet gateway or NAT.
+
+**10 AWS Services Integrated (VPC Endpoints)**
 * **ECS:** Elastic Container Service for container orchestration.
 * **ECR:** Elastic Container Registry for storing Docker images.
 * **S3:** Amazon Simple Storage Service for data storage & needed for ECR as the image layers will be stored in AWS backend S3 bucket.
