@@ -1,4 +1,0 @@
-# ℹ️ **Note:** To display sensitive outputs like `rds_password`, you need to run Terraform with the flag:
-# terraform output rds_password --no-color
-# Or view it after `terraform apply` with:
-# terraform output --json | jq '.rds_password'
