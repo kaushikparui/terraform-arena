@@ -51,15 +51,13 @@ module "ecs" {
   ecsInstanceRole        = module.iam_roles.ecsInstanceRole
   log_grp_name           = module.cloudWatch.log_name
   key_name               = module.pemfile.pemfile
-  alb_target_grp_1       = module.alb.alb_target_grp_1
-  alb_target_grp_2       = module.alb.alb_target_grp_2
+  alb_target_grp         = module.alb.alb_target_grp
   aws_region             = var.aws_region
   app_name               = var.app_name
   env                    = var.env
   ecs_ec2_type           = var.ecs_ec2_type
   asg_max_node           = var.asg_max_node
   asg_min_node           = var.asg_min_node
-  ecr_image_url          = var.ecr_image_url
 }
 
 module "bastion" {

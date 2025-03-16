@@ -8,11 +8,6 @@ output "pemfile" {
   value       = module.pemfile.pemfile
 }
 
-output "alb_url" {
-  description = "PEM file"
-  value       = module.alb.alb_url
-}
-
 output "rds_endpoint" {
   description = "RDS endpoint"
   value       = module.rds-mysql.rds_endpoint

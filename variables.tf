@@ -38,7 +38,3 @@ variable "asg_min_node" {
   description = "Provide Minimum instance for AGS"
   type        = string ## Value fetching from prod/stag/dev.tfvars
 }
-variable "ecr_image_url" {
-  description = "Provide ECR Image URL"
-  type        = string ## Value fetching from prod/stag/dev.tfvars
-}

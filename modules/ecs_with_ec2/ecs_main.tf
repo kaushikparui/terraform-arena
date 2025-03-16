@@ -58,10 +58,7 @@ resource "aws_ecs_task_definition" "app" {
     name         = "${var.app_name}-${var.env}-app",
     image        = "${var.ecr_image_url}",
     essential    = true,
-    portMappings = [
-      { containerPort = 3000, hostPort = 0 },
-      { containerPort = 8080, hostPort = 0 }
-      ],
+    portMappings = [{ containerPort = 80, hostPort = 0 }],
 
     /*environment = [
       { name = "EXAMPLE", value = "example" }
@@ -111,17 +108,16 @@ resource "aws_ecs_service" "app" {
     field = "memory"
   }
 
-  depends_on = [var.alb_target_grp_1, var.alb_target_grp_2, var.ecsInstanceRole]
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
+  depends_on = [var.alb_target_grp, var.ecsInstanceRole]
 
   load_balancer {
-    target_group_arn = var.alb_target_grp_1
+    target_group_arn = var.alb_target_grp
     container_name   = "${var.app_name}-${var.env}-app"
-    container_port   = 3000
-  }
-  load_balancer {
-    target_group_arn = var.alb_target_grp_2
-    container_name   = "${var.app_name}-${var.env}-app"
-    container_port   = 8080
+    container_port   = 80
   }
 
 }
