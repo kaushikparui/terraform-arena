@@ -22,6 +22,30 @@ resource "aws_lb_target_group" "app" {
   }
 
   tags = {
-    name = "${var.app_name}-${var.env}-alb-ecs-tg"
+    name = "${var.app_name}-${var.env}-alb-ecs-app-tg"
+  }
+}
+
+resource "aws_lb_target_group" "app_2" {
+  name_prefix = "lb-tg-"
+  vpc_id      = var.vpc_id
+  protocol    = "HTTP"
+  port        = 80
+  target_type = "instance"
+  deregistration_delay = "120"
+
+  health_check {
+    enabled             = true
+    path                = "/app2"
+    port                = "traffic-port"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+  }
+
+  tags = {
+    name = "${var.app_name}-${var.env}-alb-2-ecs-app-tg"
   }
 }
