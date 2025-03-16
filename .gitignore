@@ -77,3 +77,4 @@ terraform*
 Original
 *csv
 *plan
+*.pem

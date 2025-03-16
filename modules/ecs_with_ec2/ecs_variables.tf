@@ -29,7 +29,7 @@ variable "ecr_image_url" {
   description = "This is the Image URL from ECR"
   type        = string
   sensitive   = true
-  default     = "725873549359.dkr.ecr.us-west-1.amazonaws.com/devin:latest"
+  #default     = "725873549359.dkr.ecr.us-west-1.amazonaws.com/devin:latest"
 }
 
 variable "ecs_task" {
@@ -62,7 +62,12 @@ variable "key_name" {
   type = string
 }
 
-variable "alb_target_grp" {
+variable "alb_target_grp_1" {
+  description = "Fetch ALB Target Group from ALB Module using Parent main.tf"
+  type = string
+}
+
+variable "alb_target_grp_2" {
   description = "Fetch ALB Target Group from ALB Module using Parent main.tf"
   type = string
 }
